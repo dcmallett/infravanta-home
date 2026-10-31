@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
@@ -26,6 +27,12 @@ export default function SignInPage() {
             Sign in
           </Button>
         </form>
+        <p className="mt-6 text-center text-body text-muted-foreground">
+          New to Infravanta Home?{" "}
+          <Link href="/sign-up" className="font-semibold text-brand-700 hover:underline">
+            Create an account
+          </Link>
+        </p>
       </Card>
     </main>
   );

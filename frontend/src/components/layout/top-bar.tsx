@@ -6,6 +6,8 @@ import { Bell, CircleHelp } from "lucide-react";
 
 import { getPageTitle } from "@/lib/navigation";
 
+import { ProfileMenu } from "./profile-menu";
+
 const iconButton =
   "flex size-11 items-center justify-center rounded-md text-neutral-700 transition-colors duration-150 hover:bg-muted hover:text-neutral-950";
 
@@ -27,15 +29,7 @@ export function TopBar() {
         <button type="button" className={iconButton} aria-label="Notifications">
           <Bell className="size-5" aria-hidden="true" />
         </button>
-        <button
-          type="button"
-          className="ml-1 flex size-11 items-center justify-center rounded-full"
-          aria-label="Profile menu"
-        >
-          <span className="flex size-8 items-center justify-center rounded-full bg-brand-100 text-label text-brand-900">
-            AJ
-          </span>
-        </button>
+        <ProfileMenu />
       </div>
     </header>
   );

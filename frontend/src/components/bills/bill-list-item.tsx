@@ -1,37 +1,15 @@
 import Link from "next/link";
-import { Droplets, Flame, Landmark, ReceiptText, Smartphone, Wifi, Zap, type LucideIcon } from "lucide-react";
 
 import { formatCurrency, formatDateRange } from "@/lib/formatting";
-import type { Bill, BillCategory, BillFrequency } from "@/types/bill";
+import type { Bill } from "@/types/bill";
 
 import { BillChange } from "./bill-change";
+import { billCategories, frequencyLabel, previousPeriodLabel } from "./bill-category";
 import { BillStatusBadge } from "./bill-status-badge";
-
-const categoryConfig: Record<BillCategory, { label: string; icon: LucideIcon }> = {
-  electricity: { label: "Electricity", icon: Zap },
-  gas: { label: "Gas", icon: Flame },
-  broadband: { label: "Broadband", icon: Wifi },
-  water: { label: "Water", icon: Droplets },
-  "council-tax": { label: "Council tax", icon: Landmark },
-  mobile: { label: "Mobile", icon: Smartphone },
-  insurance: { label: "Insurance", icon: ReceiptText },
-};
-
-const frequencyLabel: Record<BillFrequency, string> = {
-  monthly: "Monthly",
-  quarterly: "Quarterly",
-  annual: "Annual",
-};
-
-const previousPeriodLabel: Record<BillFrequency, string> = {
-  monthly: "last month",
-  quarterly: "last quarter",
-  annual: "last year",
-};
 
 /** One bill as a stacked row — works on mobile without a wide table. */
 export function BillListItem({ bill }: { bill: Bill }) {
-  const { label, icon: Icon } = categoryConfig[bill.category];
+  const { label, icon: Icon } = billCategories[bill.category];
 
   return (
     <li>

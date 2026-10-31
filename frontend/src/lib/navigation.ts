@@ -62,6 +62,13 @@ export const mobileNavigation: NavItem[] = [
   { label: "My Home", href: "/home", icon: House },
 ];
 
+/** Account menu in the top bar — how mobile users reach secondary pages */
+export const accountMenuNavigation: NavItem[] = [
+  { label: "Reminders", href: "/reminders", icon: CalendarClock },
+  { label: "Reports", href: "/reports", icon: ChartNoAxesCombined },
+  ...sidebarFooterNavigation,
+];
+
 export function isActivePath(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }

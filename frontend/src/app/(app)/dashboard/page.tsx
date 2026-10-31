@@ -1,22 +1,28 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CalendarClock, Upload } from "lucide-react";
+import { ArrowRight, Upload } from "lucide-react";
 
 import { BillChange } from "@/components/bills/bill-change";
 import { BillList } from "@/components/bills/bill-list";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { PageHeader } from "@/components/layout/page-header";
+import { ReminderItem } from "@/components/reminders/reminder-item";
+import { priorityConfig } from "@/components/savings/recommendation-card";
 import { Badge } from "@/components/ui/badge";
 import { buttonClasses } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { EmptyState } from "@/components/ui/empty-state";
 import { formatCurrency, formatCurrencyRange } from "@/lib/formatting";
-import { householdSummary, sampleBills } from "@/lib/mock-data/bills";
+import { sampleBills } from "@/lib/mock-data/bills";
+import { householdSummary } from "@/lib/mock-data/household";
+import { MOCK_TODAY, sampleReminders } from "@/lib/mock-data/reminders";
+import { sampleRecommendations } from "@/lib/mock-data/savings";
 
 export const metadata: Metadata = { title: "Dashboard" };
 
 export default function DashboardPage() {
   const { monthlyBills, previousMonthlyBills, potentialAnnualSavings, upcomingRenewals } = householdSummary;
+  const nextReminders = [...sampleReminders].sort((a, b) => a.dueDate.localeCompare(b.dueDate)).slice(0, 3);
+  const opportunities = sampleRecommendations.filter((rec) => rec.priority !== "no-action").slice(0, 3);
 
   return (
     <>
@@ -40,11 +46,12 @@ export default function DashboardPage() {
             label="Monthly household bills"
             value={formatCurrency(monthlyBills)}
             comparison={<BillChange current={monthlyBills} previous={previousMonthlyBills} periodLabel="last month" />}
+            explanation="Quarterly and yearly bills are shown as a monthly amount."
             href="/bills"
             linkLabel="View bills"
           />
           <MetricCard
-            label="Potential annual savings"
+            label="Potential yearly savings"
             value={formatCurrencyRange(potentialAnnualSavings.min, potentialAnnualSavings.max)}
             tag={<Badge>Estimate</Badge>}
             explanation="Based on your uploaded bills. Not yet saved — check each option to confirm."
@@ -61,7 +68,7 @@ export default function DashboardPage() {
           <MetricCard
             label="Bills needing review"
             value={String(sampleBills.filter((b) => b.status === "needs-review").length)}
-            explanation="Check extracted details before they're used in calculations."
+            explanation="Check details we read from your bills before they're used in calculations."
             href="/bills"
             linkLabel="Review now"
           />
@@ -82,16 +89,51 @@ export default function DashboardPage() {
           <BillList bills={sampleBills.slice(0, 3)} />
         </Card>
 
-        <Card>
-          <CardHeader className="mb-0">
+        <Card className="p-0 md:p-0">
+          <CardHeader className="mb-0 border-b border-border px-4 py-4 md:px-5">
             <CardTitle>Upcoming reminders</CardTitle>
+            <Link href="/reminders" className={buttonClasses({ variant: "tertiary", size: "sm" })}>
+              View all
+            </Link>
           </CardHeader>
-          <EmptyState
-            icon={CalendarClock}
-            title="No reminders yet"
-            description="Add a contract end date to a bill and we'll remind you before it renews."
-            className="py-6"
-          />
+          <ul className="divide-y divide-border">
+            {nextReminders.map((reminder) => (
+              <ReminderItem key={reminder.id} reminder={reminder} today={MOCK_TODAY} compact />
+            ))}
+          </ul>
+        </Card>
+
+        <Card className="p-0 md:p-0 lg:col-span-3">
+          <CardHeader className="mb-0 border-b border-border px-4 py-4 md:px-5">
+            <div>
+              <CardTitle>Savings opportunities</CardTitle>
+              <CardDescription>Estimates to check, not money saved yet.</CardDescription>
+            </div>
+            <Link href="/savings" className={buttonClasses({ variant: "tertiary", size: "sm" })}>
+              View all
+            </Link>
+          </CardHeader>
+          <ul className="grid grid-cols-1 divide-y divide-border md:grid-cols-3 md:divide-x md:divide-y-0">
+            {opportunities.map((rec) => (
+              <li key={rec.id}>
+                <Link href="/savings" className="group flex h-full flex-col gap-2 p-4 hover:bg-neutral-50 md:p-5">
+                  <Badge variant={priorityConfig[rec.priority].variant} className="self-start">
+                    {priorityConfig[rec.priority].label}
+                  </Badge>
+                  <p className="text-body font-semibold text-neutral-950">{rec.title}</p>
+                  <p className="text-body text-neutral-800 tabular-nums">
+                    {rec.annualSaving
+                      ? `${formatCurrencyRange(rec.annualSaving.min, rec.annualSaving.max)} a year (estimate)`
+                      : rec.annualSavingNote}
+                  </p>
+                  <span className="mt-auto inline-flex items-center gap-1 text-label font-semibold text-brand-700 group-hover:underline">
+                    Details
+                    <ArrowRight className="size-4" aria-hidden="true" />
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
         </Card>
       </div>
     </>

@@ -38,7 +38,7 @@ export default function MarketingHomePage() {
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link href="/sign-in" className={buttonClasses()}>
+              <Link href="/sign-up" className={buttonClasses()}>
                 Get started free
               </Link>
               <Link href="/dashboard" className={buttonClasses({ variant: "secondary" })}>
