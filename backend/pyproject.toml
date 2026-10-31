@@ -1,0 +1,27 @@
+[project]
+name = "infravanta-home-api"
+version = "0.1.0"
+description = "Bill extraction, calculation engine and AI services for Infravanta Home"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.118",
+    "pydantic>=2.12",
+    "pydantic-settings>=2.11",
+    "uvicorn>=0.37",
+]
+
+[project.optional-dependencies]
+dev = [
+    "httpx>=0.28",
+    "pytest>=8.4",
+]
+
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
